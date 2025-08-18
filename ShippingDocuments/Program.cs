@@ -1,9 +1,16 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using ShippingDocuments.Application;
 using ShippingDocuments.Components;
 using ShippingDocuments.Components.Account;
 using ShippingDocuments.Data;
+using ShippingDocuments.Infrastructure.OData;
+using ShippingDocuments.Infrastructure.RabbitMq;
+using System.Net.Http.Headers;
+using System.Text;
+using OData = ShippingDocuments.Infrastructure.OData;
 
 namespace ShippingDocuments
 {
@@ -12,6 +19,13 @@ namespace ShippingDocuments
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateLogger();
+
+            builder.Services.AddSerilog();
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
@@ -43,6 +57,21 @@ namespace ShippingDocuments
                 .AddDefaultTokenProviders();
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+            var odataConfig = builder.Configuration.GetSection(nameof(OData)).Get<ODataConfig>()
+                ?? throw new InvalidOperationException("OData Config Not Found");
+            var authenticationString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{odataConfig.UserName}:{odataConfig.Password}"));
+            builder.Services.AddHttpClient<ODataClient>(httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(odataConfig.BaseAddress);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationString);
+            });
+
+            builder.Services.AddScoped<IODataService, ODataService>();
+
+            builder.Services.AddScoped<ISaleDocService, SaleDocService>();
+
+            builder.Services.AddHostedService<RabbitMqConsumer>();
 
             var app = builder.Build();
 

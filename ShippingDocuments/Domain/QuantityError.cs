@@ -1,0 +1,20 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace ShippingDocuments.Domain
+{
+    public class QuantityError
+    {
+        [Key]
+        public Guid Id { get; set; }
+
+        public Guid SaleDocId { get; set; }
+
+        [JsonIgnore]
+        public SaleDoc? SaleDoc { get; set; }
+
+        public int LineNumber { get; set; }
+
+        public double Quantity { get; set; }
+    }
+}
