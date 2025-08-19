@@ -1,0 +1,44 @@
+@using ShippingDocuments.Application
+@using ShippingDocuments.Common
+@using ShippingDocuments.Domain
+
+<div class="card me-2" style="min-width: 280px;">
+    <div class="card-header sticky-top bg-white z-1 p-1">
+        <h5 class="text-center mb-0">
+            <span>@Name</span>
+            <span class="badge bg-primary rounded-pill">@(SaleDocs?.Count ?? 0)</span>
+        </h5>
+    </div> @if (SaleDocs is not null)
+        {
+        <div class="card-body overflow-auto" style="height: calc(100vh - 150px);">
+            @foreach (var item in SaleDocs)
+            {
+                <div class="card mb-1">
+                    <div class="card-body p-1">
+                        <div class="card-title mb-1">
+                            <a class="btn" href="/saledocs/edit?Id=@item.Id">
+                                <div class="row">
+                                    <div class="col">@item.Number</div>
+                                    <div class="col">@item.ShortDate</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<SaleDoc>? SaleDocs { get; set; }
+
+    [Parameter]
+    public string Name { get; set; } = string.Empty;
+
+    private void OnClick(MouseEventArgs args)
+    {
+        throw new NotImplementedException();
+    }
+}

@@ -1,0 +1,121 @@
+﻿@page "/saledocs/edit"
+
+@using ShippingDocuments.Application
+@using ShippingDocuments.Common
+@using ShippingDocuments.Domain
+@using ShippingDocuments.Infrastructure.OData.Models
+
+@inject ISaleDocService SaleDocService
+@inject NavigationManager NavigationManager
+
+@if (SaleDoc is null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-grow" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                <span>@Document_РеализацияТоваровУслуг.DocumentName</span>
+                <span>@SaleDoc.Number</span>
+                <span> от </span>
+                <span>@SaleDoc.Date</span>
+            </h5>
+            <div>
+                <span>Позиция: </span><span>@SaleDoc.Position.Description()</span>
+            </div>
+            <div>
+                <span>Статус: </span><span>@SaleDoc.Status.Description()</span>
+            </div>
+            <EditForm method="post" Model="SaleDoc" OnSubmit="UpdateSaleDoc" FormName="updateSaleDoc" Enhance>
+                @foreach (var key in PaperworkErrorTypes.Keys)
+                {
+                    <div class="col h5">
+                        <div class="form-check mt-2">
+                            <InputCheckbox class="form-check-input"
+                                           @bind-Value="PaperworkErrorTypes[key]" id="@($"paperworkErrorType_{key}")"
+                                           @oninput="@((args) => UpdatePaperworkErrors(args, key))" />
+                            <label class="form-check-label" for="@($"paperworkErrorType_{key}")">
+                                @(Enum.Parse<PaperworkErrorType>(key).Description())
+                            </label>
+                        </div>
+                    </div>
+                }
+
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                    <span>Корректен</span>
+                </button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    public Guid Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private SaleDoc? SaleDoc { get; set; } = new();
+
+    private Dictionary<string, bool> PaperworkErrorTypes = Enum.GetValues<PaperworkErrorType>()
+        .ToDictionary(e => e.ToString(), e => false);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSaleDoc();
+        LoadPaperworkErrorTypes();
+    }
+
+    private async Task LoadSaleDoc()
+    {
+        SaleDoc = await SaleDocService.Get(Id);
+    }
+
+    private void LoadPaperworkErrorTypes()
+    {
+        if (SaleDoc is null || SaleDoc.PaperworkErrors is null)
+            return;
+
+        foreach (var item in SaleDoc.PaperworkErrors)
+        {
+            PaperworkErrorTypes[item.Type.ToString()] = true;
+        }
+    }
+
+    private async Task UpdateSaleDoc(EditContext args)
+    {
+        await SaleDocService.UpdateAsync((SaleDoc)args.Model);
+
+        NavigationManager.NavigateTo("saledocs");
+    }
+
+    private void UpdatePaperworkErrors(ChangeEventArgs args, string key)
+    {
+        if (SaleDoc is null || args.Value is null)
+            return;
+
+        var paperworkErrorType = Enum.Parse<PaperworkErrorType>(key);
+        var isChecked = (bool)args.Value;
+
+        SaleDoc.PaperworkErrors ??= [];
+
+        var paperworkError = SaleDoc.PaperworkErrors.FirstOrDefault(e => e.Type == paperworkErrorType);
+
+        if (paperworkError is null && isChecked)
+        {
+            paperworkError = new() { SaleDocId = SaleDoc.Id, Type = paperworkErrorType };
+
+            SaleDoc.PaperworkErrors.Add(paperworkError);
+        }
+        if (paperworkError is not null && !isChecked)
+        {
+            SaleDoc.PaperworkErrors.Remove(paperworkError);
+        }
+    }
+}

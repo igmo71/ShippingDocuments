@@ -17,7 +17,6 @@
         public string? Контрагент_Key { get; set; }
         public Catalog_Контрагенты? Контрагент { get; set; }
 
-        //public static string Name => nameof(Document_РеализацияТоваровУслуг).Substring(9);
         public static string DocumentName => "Реализация товаров и услуг";
 
         public static ODataParams ODataParams => new()

@@ -8,7 +8,7 @@ namespace ShippingDocuments.Infrastructure.OData
         Task<Document_РеализацияТоваровУслуг?> GetDocument_РеализацияТоваровУслуг(string refKey);
     }
 
-    public class ODataService(ODataClient oDataClient, ILogger<IODataService> logger) : IODataService
+    public class ODataService(ODataClient oDataClient) : IODataService
     {
         public async Task<Document_РеализацияТоваровУслуг?> GetDocument_РеализацияТоваровУслуг(string refKey)
         {

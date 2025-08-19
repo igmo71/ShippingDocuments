@@ -21,17 +21,24 @@ namespace ShippingDocuments.Domain
         [JsonIgnore]
         public ApplicationUser? User { get; set; }
 
-        public Position? Position { get; set; } = Domain.Position.ForDispatch;
+        public Position Position { get; set; } = Domain.Position.ForDispatch;
 
-        public Status? Status { get; set; } = Domain.Status.New;
+        //public Status Status { get; set; } = Domain.Status.New;
 
         public List<PaperworkError>? PaperworkErrors { get; set; }
 
         public List<QuantityError>? QuantityErrors { get; set; }
 
+        public bool HasPaperworkErrors => PaperworkErrors is not null && PaperworkErrors.Count > 0;
+
+        public bool HasQuantityErrors => QuantityErrors is not null && QuantityErrors.Count > 0;
+
+        public bool IsCorrect => !HasPaperworkErrors && !HasQuantityErrors;
+
         public int Redispatch { get; set; } // Повторная отправка
 
-        public static string ODataSShortName => "Реализация";
+        public string ShortDate => Date is null ? string.Empty : ((DateTime)Date).ToShortDateString();
+
 
         public static SaleDoc From(MngrOrder? mngrOrder)
         {// Реализация товаров и услуг КСУТ-006288 от 16.04.2025 10:46:59
@@ -51,24 +58,24 @@ namespace ShippingDocuments.Domain
         }
     }
 
-    [Flags]
-    public enum Status
-    {
-        [Description("None")]
-        None = 0b0000,
+    //[Flags]
+    //public enum Status
+    //{
+    //    [Description("None")]
+    //    None = 0b0000,
 
-        [Description("Новый")]
-        New = 0b0001,
+    //    [Description("Новый")]
+    //    New = 0b0001,
 
-        [Description("Корректен")]
-        Correct = 0b0010,
+    //    [Description("Корректен")]
+    //    Correct = 0b0010,
 
-        [Description("Перепечатать")]
-        PaperworkError = 0b0100,
+    //    [Description("Перепечатать")]
+    //    PaperworkError = 0b0100,
 
-        [Description("Требует корректировки состава товаров")]
-        QuantityError = 0b1000
-    }
+    //    [Description("Требует корректировки состава товаров")]
+    //    QuantityError = 0b1000
+    //}
 
     public enum Position
     {
@@ -76,10 +83,10 @@ namespace ShippingDocuments.Domain
         ForDispatch,
 
         [Description("Операторы РЦ")]
-        Operator,
+        Operators,
 
         [Description("Менеджеры")]
-        Manager,
+        Managers,
 
         [Description("Бухгалтерия к приемке")]
         Accounting,

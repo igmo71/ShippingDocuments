@@ -1,0 +1,75 @@
+﻿@page "/kanban"
+
+<div class="container-fluid vh-100 py-3">
+    <div class="d-flex overflow-auto h-100">
+
+        <!-- Колонка 1 -->
+        <div class="card me-3" style="min-width: 300px;">
+            <div class="card-header sticky-top bg-white z-1 p-2">
+                <h5 class="text-center mb-0">Запланировано <span class="badge bg-primary rounded-pill">3</span></h5>
+            </div>
+            <div class="card-body overflow-auto" style="height: calc(100vh - 150px);">
+                <div class="card mb-2">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1">Задача 1</h6>
+                        <p class="card-text small text-muted mb-0">Описание задачи</p>
+                    </div>
+                </div>
+                <!-- Другие карточки -->
+            </div>
+            <div class="card-footer p-2">
+                <button class="btn btn-outline-primary btn-sm w-100">+ Добавить</button>
+            </div>
+        </div>
+
+        <!-- Колонка 2 -->
+        <div class="card me-3" style="min-width: 300px;">
+            <div class="card-header sticky-top bg-white z-1 p-2">
+                <h5 class="text-center mb-0">В работе <span class="badge bg-warning text-dark rounded-pill">2</span></h5>
+            </div>
+            <div class="card-body overflow-auto" style="height: calc(100vh - 150px);">
+                <div class="card mb-2 border-start border-4 border-info">
+                    <div class="card-body p-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="card-title mb-1">Дизайн интерфейса</h6>
+                            <div class="dropdown">
+                                <button class="btn btn-sm p-0" data-bs-toggle="dropdown">⋯</button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#">Редактировать</a></li>
+                                    <li><a class="dropdown-item" href="#">Удалить</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="card-text small text-muted mb-1">Создать макеты для главной</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-warning text-dark">Средний</span>
+                            <small class="text-muted">2 дня назад</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-2">
+                <button class="btn btn-outline-primary btn-sm w-100">+ Добавить</button>
+            </div>
+        </div>
+
+        <!-- Колонка 3 -->
+        <div class="card" style="min-width: 300px;">
+            <div class="card-header sticky-top bg-white z-1 p-2">
+                <h5 class="text-center mb-0">Готово <span class="badge bg-success rounded-pill">1</span></h5>
+            </div>
+            <div class="card-body overflow-auto" style="height: calc(100vh - 150px);">
+                <div class="card mb-2 border-start border-4 border-success">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1">Тестирование</h6>
+                        <p class="card-text small text-muted mb-0">Завершено успешно</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer p-2">
+                <button class="btn btn-outline-primary btn-sm w-100">+ Добавить</button>
+            </div>
+        </div>
+
+    </div>
+</div>
