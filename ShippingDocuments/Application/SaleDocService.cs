@@ -44,8 +44,6 @@ namespace ShippingDocuments.Application
 
         public async Task UpdateAsync(SaleDoc item)
         {
-            UpdatePosition(item);
-
             dbContext.Update(item);
 
             await dbContext.SaveChangesAsync();
@@ -64,26 +62,10 @@ namespace ShippingDocuments.Application
         {
             var item = await dbContext.SaleDocs
                 .Include(e => e.PaperworkErrors)
+                .Include(e => e.QuantityErrors)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
-            UpdatePosition(item);
-
             return item;
-        }
-
-        private static void UpdatePosition(SaleDoc? item)
-        {
-            if (item == null)
-                return;
-
-            if (item.Position == Position.ForDispatch)
-                item.Position = Position.Operators;
-
-            if (item.Position == Position.Operators && (item.HasPaperworkErrors || item.HasQuantityErrors))
-                item.Position = Position.Managers;
-
-            if (item.Position == Position.Operators && item.IsCorrect )
-                item.Position = Position.Accounting;
         }
     }
 }

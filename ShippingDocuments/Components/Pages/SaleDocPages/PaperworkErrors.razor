@@ -1,0 +1,68 @@
+@using ShippingDocuments.Application
+@using ShippingDocuments.Common
+@using ShippingDocuments.Domain
+@using ShippingDocuments.Infrastructure.OData.Models
+
+@if (SaleDoc is not null)
+{
+    <div class="h5 text-center">Укажите ошибки оформления при наличии:</div>
+    <div>
+        <div class="row border">
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.Stamp" OnInput="UpdatePaperworkErrors" />
+            </div>
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ReceiptCargoDate" OnInput="UpdatePaperworkErrors" />
+            </div>            
+        </div>
+        <div class="row border">
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ConsigneeJobTitle" OnInput="UpdatePaperworkErrors" />
+            </div>
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ConsigneeSignature" OnInput="UpdatePaperworkErrors" />
+            </div>
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ConsigneeFullName" OnInput="UpdatePaperworkErrors" />
+            </div>
+        </div>
+        <div class="row border">
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ResponsibleJobTitle" OnInput="UpdatePaperworkErrors" />
+            </div>
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ResponsibleSignature" OnInput="UpdatePaperworkErrors" />
+            </div>
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ResponsibleFullName" OnInput="UpdatePaperworkErrors" />
+            </div>
+        </div>
+        <div class="row border">
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ConsigneePowerOfAttorney" OnInput="UpdatePaperworkErrors" />
+            </div>
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.ResponsiblePowerOfAttorney" OnInput="UpdatePaperworkErrors" />
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row border">
+            <div class="col">
+                <ErrorCheckBox SaleDoc="SaleDoc" ErrorType="PaperworkErrorType.Other" OnInput="UpdatePaperworkErrors" />
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public SaleDoc? SaleDoc { get; set; }
+
+    [Parameter]
+    public EventCallback<ErrorCheckBoxParams> OnInput { get; set; }
+
+    private void UpdatePaperworkErrors(ErrorCheckBoxParams args)
+    {
+        OnInput.InvokeAsync(args);
+    }
+}

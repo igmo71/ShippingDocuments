@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace ShippingDocuments.Domain
 {
     public class SaleDoc //Document_РеализацияТоваровУслуг
-    {        
+    {
         [Key]
         public Guid Id { get; set; } // Ref_Key
 
@@ -24,6 +24,7 @@ namespace ShippingDocuments.Domain
         public Position Position { get; set; } = Domain.Position.ForDispatch;
 
         //public Status Status { get; set; } = Domain.Status.New;
+        public int Redispatch { get; set; } // Повторная отправка
 
         public List<PaperworkError>? PaperworkErrors { get; set; }
 
@@ -35,7 +36,17 @@ namespace ShippingDocuments.Domain
 
         public bool IsCorrect => !HasPaperworkErrors && !HasQuantityErrors;
 
-        public int Redispatch { get; set; } // Повторная отправка
+        public bool IsIncorrect => !IsCorrect;
+
+        public bool ContainsPaperworkError(PaperworkErrorType errorType)
+        {
+            if (PaperworkErrors is null)
+                return false;
+
+            var result = PaperworkErrors.FirstOrDefault(e => e.Type == errorType);
+
+            return result != null;
+        }
 
         public string ShortDate => Date is null ? string.Empty : ((DateTime)Date).ToShortDateString();
 
@@ -44,7 +55,7 @@ namespace ShippingDocuments.Domain
         {// Реализация товаров и услуг КСУТ-006288 от 16.04.2025 10:46:59
             if (mngrOrder == null)
                 throw new ArgumentNullException(nameof(mngrOrder));
-            
+
             var saleDoc = new SaleDoc
             {
                 Id = Guid.Parse(mngrOrder.Распоряжение_Id),
