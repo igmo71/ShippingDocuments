@@ -155,11 +155,11 @@
 
         public static ODataParams ODataParams => new()
         {
+            ODataObjectName = nameof(Document_РеализацияТоваровУслуг_Товары),
             Expand = "Номенклатура",
             Select = "Ref_Key,LineNumber,Количество,Номенклатура_Key,Номенклатура/Description",
             OrderBy = "LineNumber"
         };
-
 
         //public string Характеристика_Key { get; set; }
         //public string Назначение_Key { get; set; }

@@ -3,10 +3,12 @@
 @using ShippingDocuments.Application
 @using ShippingDocuments.Common
 @using ShippingDocuments.Domain
+@using ShippingDocuments.Infrastructure.OData
 @using ShippingDocuments.Infrastructure.OData.Models
 
 @inject ISaleDocService SaleDocService
 @inject NavigationManager NavigationManager
+@inject IODataService ODataService
 
 @if (SaleDoc is null)
 {
@@ -21,81 +23,21 @@ else
     <EditForm method="post" Model="SaleDoc" OnSubmit="UpdateSaleDoc" FormName="updateSaleDoc" Enhance>
         <div class="card">
             <div class="card-header">
-                <h5>
-                    <span>@Document_РеализацияТоваровУслуг.DocumentName</span>
-                    <span>@SaleDoc.Number</span>
-                    <span> от </span>
-                    <span>@SaleDoc.Date</span>
-                </h5>
-                <SaleDocTitle SaleDoc="SaleDoc" />
+                <SaleDocHeader SaleDoc="SaleDoc" />
+                <div class="row">
+                    <div class="col">
+                        <SaleDocTitle SaleDoc="SaleDoc" />
+                    </div>
+                    <div class="col">
+                        <SendButtons SaleDoc="SaleDoc" RemovePaperworkErrors="RemovePaperworkErrors" RemoveQuantityErrors="RemoveQuantityErrors" />
+                    </div>
+                </div>
             </div>
-            <div class="card-body">                
-                <PaperworkErrors SaleDoc="SaleDoc" OnInput="UpdatePaperworkErrors" />
+            <div class="card-body">
+                <PaperworkErrors SaleDoc="SaleDoc" UpdatePaperworkErrors="UpdatePaperworkErrors" />
+
             </div>
             <div class="card-footer text-body-secondary">
-                <div class="row">
-                    @if (SaleDoc.Position == Position.Operators)
-                    {
-                        if (SaleDoc.IsCorrect)
-                        {
-                            <div class="col">
-                                <button type="submit" class="btn btn-success">Отправить в Бухгалтерию к приемке </button>
-                            </div>
-                        }
-                        if (SaleDoc.IsIncorrect)
-                        {
-                            <div class="col">
-                                <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
-                            </div>
-                        }
-                    }
-                    @if (SaleDoc.Position == Position.Managers)
-                    {
-                        @if (SaleDoc.HasPaperworkErrors)
-                        {
-                            <div class="col">
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="checkbox" value="" id="fixedPaperworkErrors"
-                                           checked="@(!SaleDoc.HasPaperworkErrors)"
-                                           @oninput="RemovePaperworkErrors" />
-                                    <label class="form-check-label" for="fixedPaperworkErrors">Перепечатан</label>
-                                </div>
-                            </div>
-                        }
-                        @if (SaleDoc.HasQuantityErrors)
-                        {
-                            <div class="col">
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="checkbox" value="" id="fixedQuantityErrors"
-                                           checked="@(!SaleDoc.HasQuantityErrors)"
-                                           @oninput="RemoveQuantityErrors" />
-                                    <label class="form-check-label" for="fixedQuantityErrors">Состав товаров скорректирован</label>
-                                </div>
-                            </div>
-                        }
-                        @if (SaleDoc.IsCorrect)
-                        {
-                            <div class="col">
-                                <button type="submit" class="btn btn-success" disabled="@(!SaleDoc.IsCorrect)">К отправке</button>
-                            </div>
-                        }
-                    }
-                    @if (SaleDoc.Position == Position.Accounting)
-                    {
-                        if (SaleDoc.IsCorrect)
-                        {
-                            <div class="col">
-                                <button type="submit" class="btn btn-success">Принять</button>
-                            </div>
-                        }
-                        if (SaleDoc.IsIncorrect)
-                        {
-                            <div class="col">
-                                <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
-                            </div>
-                        }
-                    }
-                </div>
             </div>
         </div>
     </EditForm>
@@ -108,9 +50,12 @@ else
     [SupplyParameterFromForm]
     private SaleDoc? SaleDoc { get; set; } = new();
 
+    private Document_РеализацияТоваровУслуг_Товары[]? products;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadSaleDoc();
+        await LoadProducts();
     }
 
     private async Task LoadSaleDoc()
@@ -128,6 +73,11 @@ else
         SaleDoc.Position = Position.Operators;
 
         await SaleDocService.UpdateAsync(SaleDoc);
+    }
+
+    private async Task LoadProducts()
+    {
+        products = await ODataService.GetDocument_РеализацияТоваровУслуг_Товары(Id.ToString());
     }
 
     private async Task UpdateSaleDoc(EditContext args)
@@ -189,12 +139,12 @@ else
         }
     }
 
-    private void RemovePaperworkErrors(ChangeEventArgs args)
+    private void RemovePaperworkErrors()
     {
         SaleDoc?.PaperworkErrors?.Clear();
     }
 
-    private void RemoveQuantityErrors(ChangeEventArgs args)
+    private void RemoveQuantityErrors()
     {
         SaleDoc?.QuantityErrors?.Clear();
     }

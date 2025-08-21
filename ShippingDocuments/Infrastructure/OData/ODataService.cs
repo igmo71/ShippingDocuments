@@ -1,11 +1,11 @@
 ﻿using ShippingDocuments.Infrastructure.OData.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ShippingDocuments.Infrastructure.OData
 {
     public interface IODataService
     {
         Task<Document_РеализацияТоваровУслуг?> GetDocument_РеализацияТоваровУслуг(string refKey);
+        Task<Document_РеализацияТоваровУслуг_Товары[]?> GetDocument_РеализацияТоваровУслуг_Товары(string refKey);
     }
 
     public class ODataService(ODataClient oDataClient) : IODataService
@@ -15,6 +15,17 @@ namespace ShippingDocuments.Infrastructure.OData
             var uri = BuildUri(Document_РеализацияТоваровУслуг.ODataParams, refKey);
 
             var result = await oDataClient.GetDataAsync<Document_РеализацияТоваровУслуг>(uri);
+
+            return result;
+        }
+
+        public async Task<Document_РеализацияТоваровУслуг_Товары[]?> GetDocument_РеализацияТоваровУслуг_Товары(string refKey)
+        {
+            var uri = BuildUri(Document_РеализацияТоваровУслуг_Товары.ODataParams, refKey);
+
+            var rootobject = await oDataClient.GetDataAsync<Rootobject<Document_РеализацияТоваровУслуг_Товары>>(uri);
+
+            var result = rootobject?.Value;
 
             return result;
         }
@@ -33,7 +44,7 @@ namespace ShippingDocuments.Infrastructure.OData
                 uri += $"&$expand={oDataParams.Expand}";
 
             if (!string.IsNullOrEmpty(refKey))
-                uri += $"Ref_Key eq guid'{refKey}'";
+                uri += $"&$filter=Ref_Key eq guid'{refKey}'";
 
             return uri;
         }

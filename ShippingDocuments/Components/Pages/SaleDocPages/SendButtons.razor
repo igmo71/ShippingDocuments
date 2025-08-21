@@ -1,0 +1,85 @@
+@using ShippingDocuments.Application
+@using ShippingDocuments.Common
+@using ShippingDocuments.Domain
+@using ShippingDocuments.Infrastructure.OData
+@using ShippingDocuments.Infrastructure.OData.Models
+
+@if (SaleDoc is not null)
+{
+    <div>
+        <div class="row">
+            @if (SaleDoc.Position == Position.Operators)
+            {
+                if (SaleDoc.IsCorrect)
+                {
+                    <div class="col">
+                        <button type="submit" class="btn btn-success">Отправить в Бухгалтерию к приемке </button>
+                    </div>
+                }
+                if (SaleDoc.IsIncorrect)
+                {
+                    <div class="col">
+                        <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
+                    </div>
+                }
+            }
+            @if (SaleDoc.Position == Position.Managers)
+            {
+                @if (SaleDoc.HasPaperworkErrors)
+                {
+                    <div class="col">
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" value="" id="fixedPaperworkErrors"
+                                   checked="@(!SaleDoc.HasPaperworkErrors)"
+                                   @oninput="RemovePaperworkErrors" />
+                            <label class="form-check-label" for="fixedPaperworkErrors">Документ Перепечатан</label>
+                        </div>
+                    </div>
+                }
+                @if (SaleDoc.HasQuantityErrors)
+                {
+                    <div class="col">
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" value="" id="fixedQuantityErrors"
+                                   checked="@(!SaleDoc.HasQuantityErrors)"
+                                   @oninput="RemoveQuantityErrors" />
+                            <label class="form-check-label" for="fixedQuantityErrors">Состав товаров скорректирован</label>
+                        </div>
+                    </div>
+                }
+                @if (SaleDoc.IsCorrect)
+                {
+                    <div class="col">
+                        <button type="submit" class="btn btn-success" disabled="@(!SaleDoc.IsCorrect)">К повторной отправке</button>
+                    </div>
+                }
+            }
+            @if (SaleDoc.Position == Position.Accounting)
+            {
+                if (SaleDoc.IsCorrect)
+                {
+                    <div class="col">
+                        <button type="submit" class="btn btn-success">Принять</button>
+                    </div>
+                }
+                if (SaleDoc.IsIncorrect)
+                {
+                    <div class="col">
+                        <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public SaleDoc? SaleDoc { get; set; }
+
+    [Parameter]
+    public EventCallback RemovePaperworkErrors { get; set; }
+
+    [Parameter]
+    public EventCallback RemoveQuantityErrors { get; set; }
+}
