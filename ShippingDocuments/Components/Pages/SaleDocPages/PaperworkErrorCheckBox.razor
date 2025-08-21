@@ -24,11 +24,13 @@
     [Parameter]
     public EventCallback<ErrorCheckBoxParams> OnInput { get; set; }
 
-    private void UpdateErrors(ChangeEventArgs args)
+    private async Task UpdateErrors(ChangeEventArgs args)
     {
         if (SaleDoc is null || args.Value is null)
             return;
 
-        OnInput.InvokeAsync(new ErrorCheckBoxParams(ErrorType, (bool)args.Value));
+        await OnInput.InvokeAsync(new ErrorCheckBoxParams(ErrorType, (bool)args.Value));
     }
+
+    public record ErrorCheckBoxParams(PaperworkErrorType ErrorType, bool IsChecked);
 }
