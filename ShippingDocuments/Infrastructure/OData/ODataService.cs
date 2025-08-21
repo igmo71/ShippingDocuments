@@ -6,6 +6,7 @@ namespace ShippingDocuments.Infrastructure.OData
     {
         Task<Document_РеализацияТоваровУслуг?> GetDocument_РеализацияТоваровУслуг(string refKey);
         Task<Document_РеализацияТоваровУслуг_Товары[]?> GetDocument_РеализацияТоваровУслуг_Товары(string refKey);
+        Task<Document_СчетФактураВыданный_ДокументыОснования[]?> GetDocument_СчетФактураВыданный_ДокументыОснования(string refKey);
     }
 
     public class ODataService(ODataClient oDataClient) : IODataService
@@ -24,6 +25,17 @@ namespace ShippingDocuments.Infrastructure.OData
             var uri = BuildUri(Document_РеализацияТоваровУслуг_Товары.ODataParams, refKey);
 
             var rootobject = await oDataClient.GetDataAsync<Rootobject<Document_РеализацияТоваровУслуг_Товары>>(uri);
+
+            var result = rootobject?.Value;
+
+            return result;
+        }
+
+        public async Task<Document_СчетФактураВыданный_ДокументыОснования[]?> GetDocument_СчетФактураВыданный_ДокументыОснования(string refKey)
+        {
+            var uri = BuildUri(Document_СчетФактураВыданный_ДокументыОснования.ODataParams, refKey);
+
+            var rootobject = await oDataClient.GetDataAsync<Rootobject<Document_СчетФактураВыданный_ДокументыОснования>>(uri);
 
             var result = rootobject?.Value;
 

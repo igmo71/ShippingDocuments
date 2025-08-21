@@ -5,6 +5,9 @@
 @using ShippingDocuments.Domain
 
 @inject ISaleDocService SaleDocService
+@inject NavigationManager NavigationManager
+
+<ScanBarcode OnScannedBarcode="ScannedBarcodeHandle"></ScanBarcode>
 
 @if (saleDocs is null)
 {
@@ -40,6 +43,32 @@ else
     private async Task LoadSaleDocs()
     {
         saleDocs = await SaleDocService.GetList();
+        SplitSaleDocs();
+    }
+
+    private async Task ScannedBarcodeHandle(string barcode)
+    {
+        var invoiceRefKey = GuidConvert.FromNumStr(barcode);
+
+        var saleDocs = await SaleDocService.GetList(invoiceRefKey);
+        if (saleDocs is null)
+            return;
+
+        if (saleDocs.Count == 1)
+            NavigationManager?.NavigateTo($"/saledocs/edit?Id={saleDocs[0].Id}");
+
+        if (saleDocs.Count > 0)
+        {
+            this.saleDocs = saleDocs;
+            SplitSaleDocs();
+        }
+    }
+
+    private void SplitSaleDocs()
+    {
+        if (saleDocs is null)
+            return;
+
         saleDocsForDispatch = saleDocs.Where(e => e.Position == Position.ForDispatch).ToList();
         saleDocsOperators = saleDocs.Where(e => e.Position == Position.Operators).ToList();
         saleDocsManagers = saleDocs.Where(e => e.Position == Position.Managers).ToList();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShippingDocuments.Data;
 using ShippingDocuments.Domain;
+using ShippingDocuments.Infrastructure.OData;
 using ShippingDocuments.Infrastructure.OData.Models;
 using ShippingDocuments.Infrastructure.Whs.Models;
 
@@ -11,10 +12,14 @@ namespace ShippingDocuments.Application
         Task CreateAsync(string mngrOrderString);
         Task UpdateAsync(SaleDoc saleDoc);
         Task<List<SaleDoc>> GetList();
+        Task<List<SaleDoc>?> GetList(string invoiceRefKey);
         Task<SaleDoc?> Get(Guid id);
     }
 
-    public class SaleDocService(ApplicationDbContext dbContext, ILogger<SaleDocService> logger) : ISaleDocService
+    public class SaleDocService(
+        ApplicationDbContext dbContext,
+        IODataService oDataService,
+        ILogger<SaleDocService> logger) : ISaleDocService
     {
         public async Task CreateAsync(string mngrOrderString)
         {
@@ -66,6 +71,22 @@ namespace ShippingDocuments.Application
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             return item;
+        }
+
+        public async Task<List<SaleDoc>?> GetList(string invoiceRefKey)
+        {
+            var baseDocuments = await oDataService.GetDocument_СчетФактураВыданный_ДокументыОснования(invoiceRefKey);
+
+            if (baseDocuments is null)
+                return null;
+
+            var saleDocs = await dbContext.SaleDocs
+                 .AsNoTracking()
+                 //.Where(e => baseDocuments.Select(e => e.ДокументОснование).Contains(e.Id.ToString()))
+                 .Where(e => baseDocuments.Select(e => e.ДокументОснование).Any(d => d == e.Id.ToString()))
+                 .ToListAsync();
+
+            return saleDocs;
         }
     }
 }
