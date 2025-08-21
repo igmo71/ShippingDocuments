@@ -21,9 +21,8 @@ namespace ShippingDocuments.Domain
         [JsonIgnore]
         public ApplicationUser? User { get; set; }
 
-        public Position Position { get; set; } = Domain.Position.ForDispatch;
+        public Position Position { get; set; } = Position.ForDispatch;
 
-        //public Status Status { get; set; } = Domain.Status.New;
         public int Redispatch { get; set; } // Повторная отправка
 
         public List<PaperworkError>? PaperworkErrors { get; set; }

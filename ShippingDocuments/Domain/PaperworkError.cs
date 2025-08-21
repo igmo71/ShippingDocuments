@@ -25,34 +25,34 @@ namespace ShippingDocuments.Domain
         [Description("Прочее")]
         Other,
 
-        [Description("Печать")]
+        [Description("Отсутствует Печать")]
         Stamp,
 
-        [Description("Дата получения")]
+        [Description("Отсутствует или не правильная Дата получения")]
         ReceiptCargoDate,
 
-        [Description("Должность грузополучателя")]
+        [Description("Отсутствует Должность грузополучателя")]
         ConsigneeJobTitle,
 
-        [Description("Подпись грузополучателя")]
+        [Description("Отсутствует Подпись грузополучателя")]
         ConsigneeSignature,
 
-        [Description("ФИО грузополучателя")]
+        [Description("Отсутствует ФИО грузополучателя")]
         ConsigneeFullName,
 
-        [Description("Доверенность на право получения")]
+        [Description("Отсутствует Доверенность на право получения")]
         ConsigneePowerOfAttorney,
 
-        [Description("Должность ответственного")]
+        [Description("Отсутствует Должность ответственного")]
         ResponsibleJobTitle,
 
-        [Description("Подпись ответственного")]
+        [Description("Отсутствует Подпись ответственного")]
         ResponsibleSignature,
 
-        [Description("ФИО ответственного")]
+        [Description("Отсутствует ФИО ответственного")]
         ResponsibleFullName,
 
-        [Description("Доверенность на право оформления")]
+        [Description("Отсутствует Доверенность на право оформления")]
         ResponsiblePowerOfAttorney
     }
 }
