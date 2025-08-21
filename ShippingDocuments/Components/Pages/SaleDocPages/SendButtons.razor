@@ -6,25 +6,53 @@
 
 @if (SaleDoc is not null)
 {
-    <div>
-        <div class="row">
-            @if (SaleDoc.Position == Position.Operators)
+    <div class="row">
+        <div class="col">
+            @if (SaleDoc.IsCorrect)
             {
-                if (SaleDoc.IsCorrect)
-                {
-                    <div class="col">
-                        <button type="submit" class="btn btn-success">Отправить в Бухгалтерию к приемке </button>
-                    </div>
-                }
-                if (SaleDoc.IsIncorrect)
-                {
-                    <div class="col">
-                        <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
-                    </div>
-                }
+                <div class="alert alert-success"> Корректен </div>
             }
-            @if (SaleDoc.Position == Position.Managers)
+        </div>
+        <div class="col">
+            @if (SaleDoc.HasPaperworkErrors)
             {
+                <div class="alert alert-danger"> Требуется перепечатка </div>
+            }
+        </div>
+        <div class="col">
+            @if (SaleDoc.HasQuantityErrors)
+            {
+                <div class="alert alert-danger"> Требует корректировки состава товаров </div>
+            }
+        </div>       
+    </div>
+    <div class="row">
+        @if (SaleDoc.Position == Position.Operators)
+        {
+            if (SaleDoc.IsCorrect)
+            {
+                <div class="col">
+                    <button type="submit" class="btn btn-success">Отправить в Бухгалтерию к приемке </button>
+                </div>
+            }
+            if (SaleDoc.IsIncorrect)
+            {
+                <div class="col">
+                    <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
+                </div>
+            }
+        }
+        @if (SaleDoc.Position == Position.Managers)
+        {
+            @if (SaleDoc.IsCorrect)
+            {
+                <div class="col">
+                    <button type="submit" class="btn btn-success" disabled="@(!SaleDoc.IsCorrect)">К повторной отправке</button>
+                </div>
+            }
+            else
+            {
+                <div class="col"></div>
                 @if (SaleDoc.HasPaperworkErrors)
                 {
                     <div class="col">
@@ -35,9 +63,17 @@
                             <label class="form-check-label" for="fixedPaperworkErrors">Документ Перепечатан</label>
                         </div>
                     </div>
+                    if (!SaleDoc.HasQuantityErrors)
+                    {
+                        <div class="col"></div>
+                    }
                 }
                 @if (SaleDoc.HasQuantityErrors)
                 {
+                    if (!SaleDoc.HasPaperworkErrors)
+                    {
+                        <div class="col"></div>
+                    }
                     <div class="col">
                         <div class="form-check mt-2">
                             <input class="form-check-input" type="checkbox" value="" id="fixedQuantityErrors"
@@ -47,29 +83,24 @@
                         </div>
                     </div>
                 }
-                @if (SaleDoc.IsCorrect)
-                {
-                    <div class="col">
-                        <button type="submit" class="btn btn-success" disabled="@(!SaleDoc.IsCorrect)">К повторной отправке</button>
-                    </div>
-                }
             }
-            @if (SaleDoc.Position == Position.Accounting)
+
+        }
+        @if (SaleDoc.Position == Position.Accounting)
+        {
+            if (SaleDoc.IsCorrect)
             {
-                if (SaleDoc.IsCorrect)
-                {
-                    <div class="col">
-                        <button type="submit" class="btn btn-success">Принять</button>
-                    </div>
-                }
-                if (SaleDoc.IsIncorrect)
-                {
-                    <div class="col">
-                        <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
-                    </div>
-                }
+                <div class="col">
+                    <button type="submit" class="btn btn-success">Принять</button>
+                </div>
             }
-        </div>
+            if (SaleDoc.IsIncorrect)
+            {
+                <div class="col">
+                    <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
+                </div>
+            }
+        }
     </div>
 }
 
