@@ -1,5 +1,6 @@
 ﻿@page "/saledocs/edit"
 
+@using Microsoft.AspNetCore.Authorization
 @using ShippingDocuments.Application
 @using ShippingDocuments.Common
 @using ShippingDocuments.Domain
@@ -11,6 +12,8 @@
 @inject ISaleDocService SaleDocService
 @inject NavigationManager NavigationManager
 @inject IODataService ODataService
+
+@attribute [Authorize]
 
 @if (SaleDoc is null)
 {

@@ -19,6 +19,7 @@ namespace ShippingDocuments.Application
     public class SaleDocService(
         ApplicationDbContext dbContext,
         IODataService oDataService,
+        AuthService authService,
         ILogger<SaleDocService> logger) : ISaleDocService
     {
         public async Task CreateAsync(string mngrOrderString)
@@ -49,6 +50,8 @@ namespace ShippingDocuments.Application
 
         public async Task UpdateAsync(SaleDoc item)
         {
+            item.UserId = await authService.GetCurrentUserIdAsync();
+
             dbContext.Update(item);
 
             await dbContext.SaveChangesAsync();
@@ -69,6 +72,11 @@ namespace ShippingDocuments.Application
                 .Include(e => e.PaperworkErrors)
                 .Include(e => e.QuantityErrors)
                 .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (item is null)
+                return null;
+
+            item.User = await authService.FindByIdAsync(item.UserId);
 
             return item;
         }
