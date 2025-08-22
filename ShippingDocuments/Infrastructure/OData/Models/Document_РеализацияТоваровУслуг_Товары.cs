@@ -9,13 +9,12 @@
         public string? Номенклатура_Key { get; set; }
         public Catalog_Номенклатура? Номенклатура { get; set; }
 
-        public static ODataParams ODataParams => new()
-        {
-            ODataObjectName = nameof(Document_РеализацияТоваровУслуг_Товары),
-            Expand = "Номенклатура",
-            Select = "Ref_Key,LineNumber,Количество,Номенклатура_Key,Номенклатура/Description",
-            OrderBy = "LineNumber"
-        };
+        public static string GetUri(string refKey) =>
+            $"Document_РеализацияТоваровУслуг_Товары" +
+            $"?$format=json" +
+            $"&$expand=Номенклатура" +
+            $"&$select=Ref_Key,LineNumber,Количество,Номенклатура_Key,Номенклатура/Description" +
+            $"&$filter=Ref_Key eq guid'{refKey}'";
 
         //public string Характеристика_Key { get; set; }
         //public string Назначение_Key { get; set; }

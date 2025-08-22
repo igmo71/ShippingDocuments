@@ -19,12 +19,12 @@
 
         public static string DocumentName => "Реализация товаров и услуг";
 
-        public static ODataParams ODataParams => new()
-        {
-            ODataObjectName = nameof(Document_РеализацияТоваровУслуг),
-            Expand = "Менеджер,Автор,Контрагент",
-            Select = "Ref_Key,Number,Date,Менеджер/Description,Автор/Description,Контрагент/Description"
-        };
+        public static string GetUri(string refKey) => 
+            $"Document_РеализацияТоваровУслуг" +
+            $"?$format=json" +
+            $"&$expand=Менеджер,Автор,Контрагент" +
+            $"&$select=Ref_Key,Number,Date,Менеджер/Description,Автор/Description,Контрагент/Description" +
+            $"&$filter=Ref_Key eq guid'{refKey}'";
 
         //public string DataVersion { get; set; }
         //public bool DeletionMark { get; set; }

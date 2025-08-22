@@ -6,12 +6,11 @@
         public int LineNumber { get; set; }
         public string? ДокументОснование { get; set; }
 
-        public static ODataParams ODataParams => new()
-        {
-            ODataObjectName = nameof(Document_СчетФактураВыданный_ДокументыОснования),
-            Select = "Ref_Key,LineNumber,ДокументОснование"
-        };
-
+        public static string GetUri(string refKey) =>
+            $"Document_СчетФактураВыданный_ДокументыОснования" +
+            $"?$format=json" +
+            $"&$select=Ref_Key,LineNumber,ДокументОснование" +
+            $"&$filter=Ref_Key eq guid'{refKey}' and ДокументОснование_Type eq 'StandardODATA.Document_РеализацияТоваровУслуг'";
 
         //public string ДокументОснование_Type { get; set; }
         //public string ХозяйственнаяОперация { get; set; }

@@ -1,4 +1,5 @@
 ﻿using ShippingDocuments.Data;
+using ShippingDocuments.Infrastructure.OData.Models;
 using ShippingDocuments.Infrastructure.Whs.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -66,26 +67,19 @@ namespace ShippingDocuments.Domain
 
             return saleDoc;
         }
+
+        public static SaleDoc From(Document_РеализацияТоваровУслуг document)
+        {
+            var saleDoc = new SaleDoc
+            {
+                Id = Guid.Parse(document.Ref_Key ?? throw new InvalidOperationException("Document_РеализацияТоваровУслуг Ref_Key is null")),
+                Number = document.Number,
+                Date = document.Date
+            };
+
+            return saleDoc;
+        }
     }
-
-    //[Flags]
-    //public enum Status
-    //{
-    //    [Description("None")]
-    //    None = 0b0000,
-
-    //    [Description("Новый")]
-    //    New = 0b0001,
-
-    //    [Description("Корректен")]
-    //    Correct = 0b0010,
-
-    //    [Description("Перепечатать")]
-    //    PaperworkError = 0b0100,
-
-    //    [Description("Требует корректировки состава товаров")]
-    //    QuantityError = 0b1000
-    //}
 
     public enum Position
     {

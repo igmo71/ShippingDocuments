@@ -85,8 +85,33 @@ namespace ShippingDocuments.Application
             var saleDocs = await dbContext.SaleDocs
                  .AsNoTracking()
                  .Where(saleDoc => baseDocumentsStr.Contains(saleDoc.Id.ToString()))
-                 //.Where(e => baseDocuments.Select(e => e.ДокументОснование).Any(d => d == e.Id.ToString()))
                  .ToListAsync();
+
+            if (saleDocs is null || saleDocs.Count == 0)
+                saleDocs = await TryLoadAndCreate(baseDocuments, saleDocs);
+
+            return saleDocs;
+        }
+
+        private async Task<List<SaleDoc>?> TryLoadAndCreate(Document_СчетФактураВыданный_ДокументыОснования[] baseDocuments, List<SaleDoc>? saleDocs)
+        {
+            saleDocs ??= [];
+
+            foreach (var baseDocument in baseDocuments)
+            {
+                var document = await oDataService.GetDocument_РеализацияТоваровУслуг(baseDocument.ДокументОснование);
+                if (document is null)
+                    continue;
+
+                saleDocs.Add(SaleDoc.From(document));
+            }
+
+            if (saleDocs is not null && saleDocs.Count > 0)
+            {
+                await dbContext.SaleDocs.AddRangeAsync(saleDocs);
+
+                await dbContext.SaveChangesAsync();
+            }
 
             return saleDocs;
         }
