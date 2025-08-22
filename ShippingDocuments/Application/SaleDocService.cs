@@ -80,10 +80,12 @@ namespace ShippingDocuments.Application
             if (baseDocuments is null)
                 return null;
 
+            var baseDocumentsStr = string.Join(" ", baseDocuments.Select(d => d.ДокументОснование));
+
             var saleDocs = await dbContext.SaleDocs
                  .AsNoTracking()
-                 //.Where(e => baseDocuments.Select(e => e.ДокументОснование).Contains(e.Id.ToString()))
-                 .Where(e => baseDocuments.Select(e => e.ДокументОснование).Any(d => d == e.Id.ToString()))
+                 .Where(saleDoc => baseDocumentsStr.Contains(saleDoc.Id.ToString()))
+                 //.Where(e => baseDocuments.Select(e => e.ДокументОснование).Any(d => d == e.Id.ToString()))
                  .ToListAsync();
 
             return saleDocs;

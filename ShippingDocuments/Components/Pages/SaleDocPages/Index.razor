@@ -43,7 +43,7 @@ else
     private async Task LoadSaleDocs()
     {
         saleDocs = await SaleDocService.GetList();
-        SplitSaleDocs();
+        SplitSaleDocsByPosition();
     }
 
     private async Task ScannedBarcodeHandle(string barcode)
@@ -57,14 +57,14 @@ else
         if (saleDocs.Count == 1)
             NavigationManager?.NavigateTo($"/saledocs/edit?Id={saleDocs[0].Id}");
 
-        if (saleDocs.Count > 0)
+        if (saleDocs.Count > 1)
         {
             this.saleDocs = saleDocs;
-            SplitSaleDocs();
+            SplitSaleDocsByPosition();
         }
     }
 
-    private void SplitSaleDocs()
+    private void SplitSaleDocsByPosition()
     {
         if (saleDocs is null)
             return;
