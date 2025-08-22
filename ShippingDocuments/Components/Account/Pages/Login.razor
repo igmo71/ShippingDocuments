@@ -3,6 +3,7 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
+@using ShippingDocuments.Application
 @using ShippingDocuments.Data
 
 @inject UserManager<ApplicationUser> UserManager
@@ -10,6 +11,7 @@
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject AuthService AuthService
 
 <PageTitle>Log in</PageTitle>
 
@@ -24,10 +26,15 @@
                 <hr />
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="form-floating mb-3">
+                    <InputText @bind-Value="Input.UserName" id="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="username" />
+                    <label for="Input.Email" class="form-label">Имя Пользователя</label>
+                    <ValidationMessage For="() => Input.UserName" class="text-danger" />
+                </div>
+                @* <div class="form-floating mb-3">
                     <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="username webauthn" aria-required="true" placeholder="name@example.com" />
                     <label for="Input.Email" class="form-label">Email</label>
                     <ValidationMessage For="() => Input.Email" class="text-danger" />
-                </div>
+                </div> *@
                 <div class="form-floating mb-3">
                     <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
                     <label for="Input.Password" class="form-label">Password</label>
@@ -128,7 +135,8 @@
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            //result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+            result = await AuthService.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         }
 
         if (result.Succeeded)
@@ -156,11 +164,17 @@
     private sealed class InputModel
     {
         [Required]
+        [MinLength(3)]
+        [MaxLength(36)]
+        public string UserName { get; set; } = "";
+
+        //[Required]
         [EmailAddress]
         public string Email { get; set; } = "";
 
         [Required]
         [DataType(DataType.Password)]
+        [MaxLength(36)]
         public string Password { get; set; } = "";
 
         [Display(Name = "Remember me?")]

@@ -13,6 +13,9 @@ namespace ShippingDocuments.Infrastructure.OData
     {
         public async Task<Document_РеализацияТоваровУслуг?> GetDocument_РеализацияТоваровУслуг(string? refKey)
         {
+            if (refKey is null)
+                return null;
+
             var uri = Document_РеализацияТоваровУслуг.GetUri(refKey);
 
             var rootobject = await oDataClient.GetDataAsync<Rootobject<Document_РеализацияТоваровУслуг>>(uri);
@@ -22,8 +25,11 @@ namespace ShippingDocuments.Infrastructure.OData
             return result;
         }
 
-        public async Task<Document_РеализацияТоваровУслуг_Товары[]?> GetDocument_РеализацияТоваровУслуг_Товары(string refKey)
+        public async Task<Document_РеализацияТоваровУслуг_Товары[]?> GetDocument_РеализацияТоваровУслуг_Товары(string? refKey)
         {
+            if (refKey is null)
+                return null;
+
             var uri = Document_РеализацияТоваровУслуг_Товары.GetUri(refKey);
 
             var rootobject = await oDataClient.GetDataAsync<Rootobject<Document_РеализацияТоваровУслуг_Товары>>(uri);
@@ -33,8 +39,11 @@ namespace ShippingDocuments.Infrastructure.OData
             return result;
         }
 
-        public async Task<Document_СчетФактураВыданный_ДокументыОснования[]?> GetDocument_СчетФактураВыданный_ДокументыОснования(string refKey)
+        public async Task<Document_СчетФактураВыданный_ДокументыОснования[]?> GetDocument_СчетФактураВыданный_ДокументыОснования(string? refKey)
         {
+            if (refKey is null)
+                return null;
+
             var uri = Document_СчетФактураВыданный_ДокументыОснования.GetUri(refKey);
 
             var rootobject = await oDataClient.GetDataAsync<Rootobject<Document_СчетФактураВыданный_ДокументыОснования>>(uri);

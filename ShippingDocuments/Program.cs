@@ -6,11 +6,13 @@ using ShippingDocuments.Application;
 using ShippingDocuments.Components;
 using ShippingDocuments.Components.Account;
 using ShippingDocuments.Data;
+using ShippingDocuments.Infrastructure.Bitrix;
 using ShippingDocuments.Infrastructure.OData;
 using ShippingDocuments.Infrastructure.RabbitMq;
 using System.Net.Http.Headers;
 using System.Text;
 using OData = ShippingDocuments.Infrastructure.OData;
+using Bitrix = ShippingDocuments.Infrastructure.Bitrix;
 
 namespace ShippingDocuments
 {
@@ -42,6 +44,17 @@ namespace ShippingDocuments
                 })
                 .AddIdentityCookies();
 
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings.
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+            });
+
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -66,6 +79,17 @@ namespace ShippingDocuments
                 httpClient.BaseAddress = new Uri(odataConfig.BaseAddress);
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authenticationString);
             });
+
+            var bitrixConfig = builder.Configuration.GetSection(nameof(Bitrix)).Get<BitrixConfig>()
+                ?? throw new InvalidOperationException("Bitrix Config Not Found");
+            builder.Services.AddHttpClient<BitrixClient>(HttpClient =>
+            {
+                HttpClient.BaseAddress = new Uri(bitrixConfig.BaseAddress);
+            });
+
+            builder.Services.AddScoped<AuthService>();
+
+            builder.Services.AddScoped<BitrixService>();
 
             builder.Services.AddScoped<IODataService, ODataService>();
 

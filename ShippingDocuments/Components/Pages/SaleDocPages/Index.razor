@@ -1,11 +1,14 @@
 ﻿@page "/saledocs"
 
+@using Microsoft.AspNetCore.Authorization
 @using ShippingDocuments.Application
 @using ShippingDocuments.Common
 @using ShippingDocuments.Domain
 
 @inject ISaleDocService SaleDocService
 @inject NavigationManager NavigationManager
+
+@attribute [Authorize]
 
 <ScanBarcode OnScannedBarcode="ScannedBarcodeHandle"></ScanBarcode>
 
