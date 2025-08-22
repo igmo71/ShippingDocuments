@@ -10,19 +10,19 @@
         <div class="col">
             @if (SaleDoc.IsCorrect)
             {
-                <div class="alert alert-success"> Корректен </div>
+                <div class="alert alert-success h5"> Корректен </div>
             }
         </div>
         <div class="col">
             @if (SaleDoc.HasPaperworkErrors)
             {
-                <div class="alert alert-danger"> Требуется перепечатка </div>
+                <div class="alert alert-danger h5"> Требуется перепечатка </div>
             }
         </div>
         <div class="col">
             @if (SaleDoc.HasQuantityErrors)
             {
-                <div class="alert alert-danger"> Требует корректировки состава товаров </div>
+                <div class="alert alert-danger h5"> Требует корректировки состава товаров </div>
             }
         </div>       
     </div>
