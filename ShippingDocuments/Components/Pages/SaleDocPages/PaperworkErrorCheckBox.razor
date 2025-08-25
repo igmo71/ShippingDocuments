@@ -4,7 +4,7 @@
 @using ShippingDocuments.Infrastructure.OData.Models
 @if (SaleDoc is not null)
 {
-    <div class="form-check mt-2">
+    <div class="form-check">
         <input class="form-check-input" type="checkbox" value="" id="@ErrorType.ToString()"
                @oninput="@UpdateErrors"
                checked=@SaleDoc.ContainsPaperworkError(ErrorType)>

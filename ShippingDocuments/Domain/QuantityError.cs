@@ -16,5 +16,8 @@ namespace ShippingDocuments.Domain
         public int LineNumber { get; set; }
 
         public double Quantity { get; set; }
+        [MaxLength(450)]
+
+        public string? Message { get; set; }
     }
 }

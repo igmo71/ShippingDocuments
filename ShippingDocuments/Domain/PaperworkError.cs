@@ -12,7 +12,7 @@ namespace ShippingDocuments.Domain
         public Guid SaleDocId { get; set; }
 
         [JsonIgnore]
-        public SaleDoc? SaleDoc { get; set; } 
+        public SaleDoc? SaleDoc { get; set; }
 
         public PaperworkErrorType Type { get; set; }
 
@@ -25,34 +25,50 @@ namespace ShippingDocuments.Domain
         [Description("Прочее")]
         Other,
 
-        [Description("Отсутствует Печать")]
-        Stamp,
 
-        [Description("Отсутствует или не правильная Дата получения")]
-        ReceiptCargoDate,
+        [Description("нет документа")]
+        NoDocument,
 
-        [Description("Отсутствует Должность грузополучателя")]
+
+        // Печать
+        [Description("нет Печати (нужна)")]
+        NoStamp,
+
+        [Description("Не та Печать")]
+        WrongStamp,
+
+
+        // Грузополучатель
+        [Description("нет Должности")]
         ConsigneeJobTitle,
 
-        [Description("Отсутствует Подпись грузополучателя")]
+        [Description("нет/не та Подпись")]
         ConsigneeSignature,
 
-        [Description("Отсутствует ФИО грузополучателя")]
+        [Description("нет/не то ФИО")]
         ConsigneeFullName,
 
-        [Description("Отсутствует Доверенность на право получения")]
+        [Description("нет/не та Дата получения")]
+        ReceiptCargoDate,
+
+        [Description("нет Доверенности на право получения")]
         ConsigneePowerOfAttorney,
 
-        [Description("Отсутствует Должность ответственного")]
+        [Description("нет/не тот Адрес получения")]
+        ReceiptAddress,
+
+
+        // Ответственный за оформление
+        [Description("нет Должности")]
         ResponsibleJobTitle,
 
-        [Description("Отсутствует Подпись ответственного")]
+        [Description("нет/не та Подпись")]
         ResponsibleSignature,
 
-        [Description("Отсутствует ФИО ответственного")]
+        [Description("нет/не то ФИО")]
         ResponsibleFullName,
 
-        [Description("Отсутствует Доверенность на право оформления")]
-        ResponsiblePowerOfAttorney
+        [Description("нет Доверенности на право оформления")]
+        ResponsiblePowerOfAttorney        
     }
 }
