@@ -28,21 +28,18 @@ else
     <EditForm method="post" Model="SaleDoc" OnSubmit="UpdateSaleDoc" FormName="updateSaleDoc" Enhance>
         <div class="card">
             <div class="card-header">
+
                 <SaleDocHeader SaleDoc="SaleDoc" />
 
-                <InfoAndButtons SaleDoc="SaleDoc"
-                                RemovePaperworkErrors="ClearPaperworkErrors"
-                                RemoveQuantityErrors="ClearQuantityErrors" />
+                <InfoAndButtons SaleDoc="SaleDoc" RemovePaperworkErrors="ClearPaperworkErrors" RemoveQuantityErrors="ClearQuantityErrors" />
 
             </div>
             <div class="card-body">
-                <PaperworkErrors SaleDoc="SaleDoc"
-                                 OnCreateOrUpdateError="CreateOrUpdatePaperworkError" />
 
-                <QuantityErrors SaleDoc="SaleDoc"
-                                Products="products"
-                                OnCreateOrUpdateError="CreateOrUpdateQuantityError"
-                                OnRemoveError="RemoveQuantityError" />
+                <PaperworkErrors SaleDoc="SaleDoc" OnCreateOrUpdateError="CreateOrUpdatePaperworkError" />
+
+                <QuantityErrors SaleDoc="SaleDoc" Products="products" OnCreateOrUpdateError="CreateOrUpdateQuantityError" OnRemoveError="RemoveQuantityError" />
+
             </div>
         </div>
     </EditForm>
@@ -134,9 +131,22 @@ else
 
         if (paperworkError is null && paperworkErrorCheckBoxParams.IsChecked)
         {
-            paperworkError = new() { SaleDocId = SaleDoc.Id, Type = paperworkErrorCheckBoxParams.ErrorType };
+            paperworkError = new()
+            {
+                SaleDocId = SaleDoc.Id,
+                Type = paperworkErrorCheckBoxParams.ErrorType
+            };
 
             SaleDoc.PaperworkErrors.Add(paperworkError);
+        }
+        if (paperworkError is not null && paperworkErrorCheckBoxParams.IsChecked)
+        {
+            var otherError = SaleDoc.GetOtherError();
+
+            if (otherError is null)
+                return;
+
+            otherError.Message = paperworkErrorCheckBoxParams.OtherErrorMessage;
         }
         if (paperworkError is not null && !paperworkErrorCheckBoxParams.IsChecked)
         {

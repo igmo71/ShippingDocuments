@@ -38,7 +38,7 @@ namespace ShippingDocuments.Domain
 
         public bool IsIncorrect => !IsCorrect;
 
-        public bool ContainsPaperworkError(PaperworkErrorType errorType)
+        public bool Contains(PaperworkErrorType errorType)
         {
             if (PaperworkErrors is null)
                 return false;
@@ -47,6 +47,8 @@ namespace ShippingDocuments.Domain
 
             return result != null;
         }
+
+        public PaperworkError? GetOtherError() => PaperworkErrors?.FirstOrDefault(e => e.Type == PaperworkErrorType.Other);
 
         public string ShortDate => Date is null ? string.Empty : ((DateTime)Date).ToShortDateString();
 

@@ -26,7 +26,7 @@ namespace ShippingDocuments.Domain
         Other,
 
 
-        [Description("нет документа")]
+        [Description("Нет документа")]
         NoDocument,
 
 
@@ -34,7 +34,7 @@ namespace ShippingDocuments.Domain
         [Description("нет Печати (нужна)")]
         NoStamp,
 
-        [Description("Не та Печать")]
+        [Description("не та Печать")]
         WrongStamp,
 
 
