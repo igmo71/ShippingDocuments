@@ -12,6 +12,7 @@
 @inject ISaleDocService SaleDocService
 @inject NavigationManager NavigationManager
 @inject IODataService ODataService
+@inject AuthService AuthService
 
 @attribute [Authorize]
 
@@ -65,6 +66,8 @@ else
         SaleDoc = await SaleDocService.Get(Id);
 
         await SetPosition();
+
+        await CheckPositionRole();
     }
 
     private async Task SetPosition()
@@ -75,6 +78,19 @@ else
         SaleDoc.Position = Position.Operators;
 
         await SaleDocService.UpdateAsync(SaleDoc);
+    }
+
+    private async Task CheckPositionRole()
+    {
+        var user = await AuthService.GetCurrentUser();
+
+        if (user is null || SaleDoc is null)
+            return;
+
+        var isUserInPositionRole = await AuthService.IsUserInRole(user, SaleDoc.Position.ToString());
+
+        if (!isUserInPositionRole)
+            NavigationManager.NavigateTo("saledocs");
     }
 
     private async Task LoadProducts()
@@ -114,6 +130,12 @@ else
             case Position.Accounting:
                 if (SaleDoc.IsCorrect)
                     SaleDoc.Position = Position.Closed;
+                else
+                    SaleDoc.Position = Position.Managers;
+                break;
+            case Position.Closed:
+                if (SaleDoc.IsCorrect)
+                    SaleDoc.Position = Position.ForDispatch;
                 else
                     SaleDoc.Position = Position.Managers;
                 break;

@@ -101,6 +101,21 @@
                 </div>
             }
         }
+        @if (SaleDoc.Position == Position.Closed)
+        {
+            @if (SaleDoc.IsCorrect)
+            {
+                <div class="col">
+                    <button type="submit" class="btn btn-success" disabled="@(!SaleDoc.IsCorrect)">К повторной отправке</button>
+                </div>
+            }
+            if (SaleDoc.IsIncorrect)
+            {
+                <div class="col">
+                    <button type="submit" class="btn btn-danger">Отправить Менеджерам на доработку</button>
+                </div>
+            }
+        }
     </div>
 }
 

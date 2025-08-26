@@ -140,5 +140,12 @@ namespace ShippingDocuments.Application
 
             return users;
         }
+
+        public async Task<bool> IsUserInRole(ApplicationUser user, string role)
+        {
+            var isUserInRole = await userManager.IsInRoleAsync(user, role);
+            var isUserAdmin = await userManager.IsInRoleAsync(user, "Admin");
+            return isUserInRole || isUserAdmin;
+        }
     }
 }
