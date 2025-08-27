@@ -73,7 +73,6 @@ namespace ShippingDocuments.Application
             return result;
         }
 
-
         public async Task RegisterUserAsync(BitrixUser bitrixUser, string password)
         {
             var user = CreateUser();
@@ -95,7 +94,7 @@ namespace ShippingDocuments.Application
             {
                 logger.LogError("{Source} {Operation} {@Errors}",
                     nameof(RegisterUserAsync), nameof(userManager.CreateAsync), result.Errors);
-                return;
+                throw new InvalidOperationException("Failed to create a user");
             }
 
             if (userManager.Options.SignIn.RequireConfirmedAccount)
@@ -109,7 +108,26 @@ namespace ShippingDocuments.Application
                         nameof(RegisterUserAsync), nameof(userManager.ConfirmEmailAsync), result.Errors);
             }
 
+            await AddToRoleAsync(user, bitrixUser);
+
             await signInManager.SignInAsync(user, isPersistent: false);
+        }
+
+        private async Task AddToRoleAsync(ApplicationUser user, BitrixUser bitrixUser)
+        {
+            IdentityResult identityResult = bitrixUser.WORK_DEPARTMENT switch
+            {
+                "Отдел продаж" => await userManager.AddToRoleAsync(user, "Managers"),
+                "Бухгалтер" => await userManager.AddToRoleAsync(user, "Accounting"),
+                _ => await userManager.AddToRoleAsync(user, "Operators"),
+            };
+
+            if (!identityResult.Succeeded)
+            {
+                logger.LogError("{Source} {Operation} {@Errors}",
+                    nameof(RegisterUserAsync), nameof(userManager.CreateAsync), identityResult.Errors);
+                throw new InvalidOperationException("Failed to add user to role");
+            }
         }
 
         private ApplicationUser CreateUser()

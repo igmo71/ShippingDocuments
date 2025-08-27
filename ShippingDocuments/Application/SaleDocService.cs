@@ -14,6 +14,7 @@ namespace ShippingDocuments.Application
         Task<List<SaleDoc>> GetList();
         Task<List<SaleDoc>?> GetList(string invoiceRefKey);
         Task<SaleDoc?> Get(Guid id);
+        Task DeleteUserAsync(string userId);
     }
 
     public class SaleDocService(
@@ -122,6 +123,13 @@ namespace ShippingDocuments.Application
             }
 
             return saleDocs;
+        }
+
+        public async Task DeleteUserAsync(string userId)
+        {
+            await dbContext.SaleDocs
+                .Where(e => e.UserId == userId)
+                .ExecuteDeleteAsync();
         }
     }
 }

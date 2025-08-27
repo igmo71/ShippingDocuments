@@ -14,6 +14,8 @@
 
 <h4>@user?.Name</h4>
 
+<h5>Roles</h5>
+
 <ul>
     @foreach (var userRole in userRoles)
     {
@@ -24,7 +26,7 @@
     }
 </ul>
 
-<div class="row">
+<div class="row mb-2">
     <div class="col-lg-6">
         <StatusMessage Message="@Message" />
         <div class="row">
