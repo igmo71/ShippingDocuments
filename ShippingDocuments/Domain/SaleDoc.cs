@@ -52,6 +52,7 @@ namespace ShippingDocuments.Domain
 
         public string ShortDate => Date is null ? string.Empty : ((DateTime)Date).ToShortDateString();
 
+        public bool IsOverdue => (int)(DateTime.Today - (Date ?? new DateTime()).Date).TotalDays > 5;
 
         public static SaleDoc From(MngrOrder? mngrOrder)
         {// Реализация товаров и услуг КСУТ-006288 от 16.04.2025 10:46:59

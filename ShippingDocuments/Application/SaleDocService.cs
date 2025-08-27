@@ -62,6 +62,7 @@ namespace ShippingDocuments.Application
         {
             var result = await dbContext.SaleDocs
                 .AsNoTracking()
+                .OrderByDescending(e => e.Date)
                 .ToListAsync();
 
             return result;

@@ -6,22 +6,21 @@
     <div class="card-header sticky-top z-1">
         <div class="h5 text-center mt-2">
             <span>@Name</span>
-            <span class="badge bg-primary rounded-pill">@(SaleDocs?.Count ?? 0)</span>
+            <span class="badge bg-info rounded-pill">@(SaleDocs?.Count ?? 0)</span>
         </div>
     </div> @if (SaleDocs is not null)
         {
         <div class="card-body overflow-auto" style="height: calc(100vh - 150px);">
             @foreach (var item in SaleDocs)
             {
-                <div class="card">
-                    <div class="card-body p-2">
-                        <a class="btn" href="/saledocs/edit?Id=@item.Id">
-                            <div class="row">
-                                <div class="col">@item.Number</div>
-                                <div class="col">@item.ShortDate</div>
-                            </div>
-                        </a>
-                    </div>
+                var overdueClass = item.IsOverdue ? "danger" : "success";
+                <div class="alert alert-@overdueClass">
+                    <a class="btn" href="/saledocs/edit?Id=@item.Id">
+                        <div class="row">
+                            <div class="col">@item.Number</div>
+                            <div class="col">@item.ShortDate</div>
+                        </div>
+                    </a>
                 </div>
             }
         </div>
