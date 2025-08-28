@@ -39,7 +39,7 @@ else
 
                 <PaperworkErrors SaleDoc="SaleDoc" OnCreateOrUpdateError="CreateOrUpdatePaperworkError" />
 
-                <QuantityErrors SaleDoc="SaleDoc" Products="products" OnCreateOrUpdateError="CreateOrUpdateQuantityError" OnRemoveError="RemoveQuantityError" />
+                @* <QuantityErrors SaleDoc="SaleDoc" Products="products" OnCreateOrUpdateError="CreateOrUpdateQuantityError" OnRemoveError="RemoveQuantityError" /> *@
 
             </div>
         </div>
@@ -142,35 +142,30 @@ else
         }
     }
 
-    private void CreateOrUpdatePaperworkError(ErrorCheckBoxParams paperworkErrorCheckBoxParams)
+    private void CreateOrUpdatePaperworkError(ErrorCheckBoxParams errorCheckBoxParams)
     {
         if (SaleDoc is null)
             return;
 
         SaleDoc.PaperworkErrors ??= [];
 
-        var paperworkError = SaleDoc.PaperworkErrors.FirstOrDefault(e => e.Type == paperworkErrorCheckBoxParams.ErrorType);
+        var paperworkError = SaleDoc.GetError(errorCheckBoxParams.ErrorType);
 
-        if (paperworkError is null && paperworkErrorCheckBoxParams.IsChecked)
+        if (paperworkError is null && errorCheckBoxParams.IsChecked)
         {
             paperworkError = new()
             {
                 SaleDocId = SaleDoc.Id,
-                Type = paperworkErrorCheckBoxParams.ErrorType
+                Type = errorCheckBoxParams.ErrorType
             };
 
             SaleDoc.PaperworkErrors.Add(paperworkError);
         }
-        if (paperworkError is not null && paperworkErrorCheckBoxParams.IsChecked)
+        if (paperworkError is not null && errorCheckBoxParams.IsChecked)
         {
-            var otherError = SaleDoc.GetOtherError();
-
-            if (otherError is null)
-                return;
-
-            otherError.Message = paperworkErrorCheckBoxParams.OtherErrorMessage;
+            paperworkError.Message = errorCheckBoxParams.OtherErrorMessage;
         }
-        if (paperworkError is not null && !paperworkErrorCheckBoxParams.IsChecked)
+        if (paperworkError is not null && !errorCheckBoxParams.IsChecked)
         {
             SaleDoc.PaperworkErrors.Remove(paperworkError);
         }

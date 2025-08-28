@@ -26,11 +26,11 @@ namespace ShippingDocuments.Domain
 
         public int Redispatch { get; set; } // Повторная отправка
 
-        public List<PaperworkError>? PaperworkErrors { get; set; }
+        public List<PaperworkError> PaperworkErrors { get; set; } = [];
 
-        public List<QuantityError>? QuantityErrors { get; set; }
+        public List<QuantityError> QuantityErrors { get; set; } = [];
 
-        public bool HasPaperworkErrors => PaperworkErrors is not null && PaperworkErrors.Count > 0;
+        public bool HasPaperworkErrors => PaperworkErrors.Count > 0;
 
         public bool HasQuantityErrors => QuantityErrors is not null && QuantityErrors.Count > 0;
 
@@ -38,17 +38,9 @@ namespace ShippingDocuments.Domain
 
         public bool IsIncorrect => !IsCorrect;
 
-        public bool Contains(PaperworkErrorType errorType)
-        {
-            if (PaperworkErrors is null)
-                return false;
+        public bool ContainsError(PaperworkErrorType errorType) => PaperworkErrors.Any(e => e.Type == errorType);
 
-            var result = PaperworkErrors.FirstOrDefault(e => e.Type == errorType);
-
-            return result != null;
-        }
-
-        public PaperworkError? GetOtherError() => PaperworkErrors?.FirstOrDefault(e => e.Type == PaperworkErrorType.Other);
+        public PaperworkError? GetError(PaperworkErrorType errorType) => PaperworkErrors?.FirstOrDefault(e => e.Type == errorType);
 
         public string ShortDate => Date is null ? string.Empty : ((DateTime)Date).ToShortDateString();
 
