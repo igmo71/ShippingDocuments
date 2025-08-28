@@ -1,0 +1,66 @@
+@using ShippingDocuments.Application
+@using ShippingDocuments.Common
+@using ShippingDocuments.Domain
+@using ShippingDocuments.Infrastructure.OData
+@using ShippingDocuments.Infrastructure.OData.Models
+
+@if (SaleDoc is not null)
+{
+    @if (SaleDoc.IsCorrect)
+    {
+        <div class="row">
+            <div class="col-3"><div class="alert alert-success h5 p-1"><i class="bi bi-check2-all me-2"></i><span> Корректен</span></div></div>
+            <div class="col-3">
+                @if (SaleDoc.Position == Position.Operators)
+                {
+                    <button type="submit" class="btn btn-success">В Бухгалтерию к приемке </button>
+                }
+                @if (SaleDoc.Position == Position.Managers)
+                {
+                    <button type="submit" class="btn btn-success">К повторной отправке</button>
+                }
+                @if (SaleDoc.Position == Position.Accounting)
+                {
+                    <button type="submit" class="btn btn-success">Принять</button>
+                }
+                @if (SaleDoc.Position == Position.Closed)
+                {
+                    <button type="submit" class="btn btn-success">К повторной отправке</button>
+                }
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-3"><div class="alert alert-danger h5 p-1"><i class="bi bi-printer me-2"></i><span> Требуется перепечатка</span></div></div>
+            <div class="col-3">
+                @if (SaleDoc.Position == Position.Managers)
+                {
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" value="" id="fixedPaperworkErrors"
+                               checked="@(!SaleDoc.HasPaperworkErrors)"
+                               @oninput="RemovePaperworkErrors" />
+                        <label class="form-check-label" for="fixedPaperworkErrors">Документ Перепечатан</label>
+                    </div>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-danger">Менеджерам на доработку</button>
+                }
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public SaleDoc? SaleDoc { get; set; }
+
+    [Parameter]
+    public EventCallback RemovePaperworkErrors { get; set; }
+
+    [Parameter]
+    public EventCallback RemoveQuantityErrors { get; set; }
+}
