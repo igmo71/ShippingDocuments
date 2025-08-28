@@ -26,23 +26,16 @@
 }
 else
 {
+    <SaleDocHeader SaleDoc="SaleDoc" />
+
+    <SaleDocMenu SaleDoc="SaleDoc" RemovePaperworkErrors="ClearPaperworkErrors" RemoveQuantityErrors="ClearQuantityErrors" />
+
     <EditForm method="post" Model="SaleDoc" OnSubmit="UpdateSaleDoc" FormName="updateSaleDoc" Enhance>
-        <div class="card">
-            <div class="card-header">
 
-                <SaleDocHeader SaleDoc="SaleDoc" />
+        <PaperworkErrors SaleDoc="SaleDoc" OnCreateOrUpdateError="CreateOrUpdatePaperworkError" />
 
-                <PaperworkInfoAndButtons SaleDoc="SaleDoc" RemovePaperworkErrors="ClearPaperworkErrors" RemoveQuantityErrors="ClearQuantityErrors" />
+        @* <QuantityErrors SaleDoc="SaleDoc" Products="products" OnCreateOrUpdateError="CreateOrUpdateQuantityError" OnRemoveError="RemoveQuantityError" /> *@
 
-            </div>
-            <div class="card-body">
-
-                <PaperworkErrors SaleDoc="SaleDoc" OnCreateOrUpdateError="CreateOrUpdatePaperworkError" />
-
-                @* <QuantityErrors SaleDoc="SaleDoc" Products="products" OnCreateOrUpdateError="CreateOrUpdateQuantityError" OnRemoveError="RemoveQuantityError" /> *@
-
-            </div>
-        </div>
     </EditForm>
 }
 

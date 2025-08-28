@@ -6,7 +6,7 @@
 @if (SaleDoc is not null)
 {
     <div class="row">
-        <div class="col-auto py-2">
+        <div class="col-auto py-1">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="@ErrorType.ToString()" value="" checked=@SaleDoc.ContainsError(ErrorType) @oninput="@UpdateError">
                 <label class="form-check-label" for="@ErrorType.ToString()">@(ErrorType.Description())</label>

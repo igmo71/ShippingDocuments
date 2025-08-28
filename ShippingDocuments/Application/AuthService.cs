@@ -118,7 +118,7 @@ namespace ShippingDocuments.Application
             IdentityResult identityResult = bitrixUser.WORK_DEPARTMENT switch
             {
                 "Отдел продаж" => await userManager.AddToRoleAsync(user, "Managers"),
-                "Бухгалтер" => await userManager.AddToRoleAsync(user, "Accounting"),
+                "Бухгалтерия" => await userManager.AddToRoleAsync(user, "Accounting"),
                 _ => await userManager.AddToRoleAsync(user, "Operators"),
             };
 
