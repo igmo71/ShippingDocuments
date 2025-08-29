@@ -19,7 +19,7 @@
 
         public static string DocumentName => "Реализация товаров и услуг";
 
-        public static string GetUri(string refKey) => 
+        public static string GetUri(string refKey) =>
             $"Document_РеализацияТоваровУслуг" +
             $"?$format=json" +
             $"&$expand=Менеджер,Автор,Контрагент" +
@@ -142,7 +142,7 @@
         //public string АвторnavigationLinkUrl { get; set; }
         //public string РуководительnavigationLinkUrl { get; set; }
         //public string ГлавныйБухгалтерnavigationLinkUrl { get; set; }
-    }    
+    }
 
     //public class Видызапасов
     //{

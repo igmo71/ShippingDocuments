@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.CodeAnalysis.Text;
-
-namespace ShippingDocuments.Infrastructure.RabbitMq
+﻿namespace ShippingDocuments.Infrastructure.RabbitMq
 {
     public class RabbitMqConfig
     {

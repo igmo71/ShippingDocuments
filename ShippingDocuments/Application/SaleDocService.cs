@@ -53,7 +53,8 @@ namespace ShippingDocuments.Application
         {
             item.UserId = await authService.GetCurrentUserIdAsync();
 
-            if (isUpdatePosition){
+            if (isUpdatePosition)
+            {
                 UpdatePosition(item);
                 dbContext.SaleDocLogs.Add(new SaleDocLog(item));
             }

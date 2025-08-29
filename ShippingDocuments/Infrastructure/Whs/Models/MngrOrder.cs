@@ -10,7 +10,7 @@ namespace ShippingDocuments.Infrastructure.Whs.Models
         public string? Распоряжение_Name { get; set; }
 
         public static MngrOrder[]? From(string mngrOrderStr)
-        {            
+        {
             return JsonSerializer.Deserialize<MngrOrder[]>(mngrOrderStr);
         }
     }

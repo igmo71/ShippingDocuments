@@ -11,8 +11,8 @@ using ShippingDocuments.Infrastructure.OData;
 using ShippingDocuments.Infrastructure.RabbitMq;
 using System.Net.Http.Headers;
 using System.Text;
-using OData = ShippingDocuments.Infrastructure.OData;
 using Bitrix = ShippingDocuments.Infrastructure.Bitrix;
+using OData = ShippingDocuments.Infrastructure.OData;
 
 namespace ShippingDocuments
 {
@@ -68,7 +68,7 @@ namespace ShippingDocuments
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
-                .AddRoleManager< RoleManager<IdentityRole>>()
+                .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddDefaultTokenProviders();
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();

@@ -24,7 +24,7 @@ namespace ShippingDocuments.Domain
         public Guid Id { get; set; }
 
         public DateTime DateTime { get; set; }
-                
+
         public string? UserId { get; set; }
         public ApplicationUser? User { get; set; }
 

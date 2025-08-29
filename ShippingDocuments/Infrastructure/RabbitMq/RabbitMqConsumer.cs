@@ -102,9 +102,9 @@ namespace ShippingDocuments.Infrastructure.RabbitMq
         {
             using IServiceScope serviceScope = _serviceScopeFactory.CreateScope();
 
-            var saleDocService = serviceScope.ServiceProvider.GetService<ISaleDocService>() 
+            var saleDocService = serviceScope.ServiceProvider.GetService<ISaleDocService>()
                 ?? throw new InvalidOperationException("SaleDocService is null");
-            
+
             await saleDocService.CreateAsync(message);
         }
     }
