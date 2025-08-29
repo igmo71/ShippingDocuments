@@ -97,6 +97,8 @@ namespace ShippingDocuments
 
             builder.Services.AddScoped<ISaleDocService, SaleDocService>();
 
+            builder.Services.AddScoped<ISaleDocLogService, SaleDocLogService>();
+
             builder.Services.AddHostedService<RabbitMqConsumer>();
 
             var app = builder.Build();

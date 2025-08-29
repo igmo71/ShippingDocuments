@@ -6,11 +6,11 @@
 
 @if (SaleDoc is not null)
 {
-    @if (SaleDoc.IsCorrect)
-    {
-        <div class="row">
-            <div class="col-3"><div class="alert alert-success h5 p-1"><i class="bi bi-check2-all me-2"></i><span> Корректен</span></div></div>
-            <div class="col-3">
+    <div class="row">
+        @if (SaleDoc.IsCorrect)
+        {
+            <div class="col"><div class="alert alert-success h5 p-1"><i class="bi bi-check2-all me-2"></i><span> Корректен</span></div></div>
+            <div class="col">
                 @if (SaleDoc.Position == Position.Operators)
                 {
                     <button type="submit" class="btn btn-success">В Бухгалтерию к приемке </button>
@@ -28,13 +28,11 @@
                     <button type="submit" class="btn btn-success">К повторной отправке</button>
                 }
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-3"><div class="alert alert-danger h5 p-1"><i class="bi bi-printer me-2"></i><span> Требуется перепечатка</span></div></div>
-            <div class="col-3">
+        }
+        else
+        {
+            <div class="col"><div class="alert alert-danger h5 p-1"><i class="bi bi-printer me-2"></i><span> Требуется перепечатка</span></div></div>
+            <div class="col">
                 @if (SaleDoc.Position == Position.Managers)
                 {
                     <div class="form-check mt-2">
@@ -49,8 +47,14 @@
                     <button type="submit" class="btn btn-danger">Менеджерам на доработку</button>
                 }
             </div>
+        }
+        <div class="col pt-2">
+            <a href="/saledoclogs?SaleDocId=@SaleDoc.Id">
+                <i class="bi bi-info-circle"></i>
+                <span>История</span>
+            </a>
         </div>
-    }
+    </div>
 }
 
 
@@ -60,7 +64,4 @@
 
     [Parameter]
     public EventCallback RemovePaperworkErrors { get; set; }
-
-    [Parameter]
-    public EventCallback RemoveQuantityErrors { get; set; }
 }

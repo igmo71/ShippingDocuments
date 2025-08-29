@@ -10,7 +10,7 @@ namespace ShippingDocuments.Application
     public interface ISaleDocService
     {
         Task CreateAsync(string mngrOrderString);
-        Task UpdateAsync(SaleDoc saleDoc);
+        Task UpdateAsync(SaleDoc saleDoc, bool isUpdatePosition = true);
         Task<List<SaleDoc>> GetList();
         Task<List<SaleDoc>?> GetList(string invoiceRefKey);
         Task<SaleDoc?> Get(Guid id);
@@ -49,13 +49,45 @@ namespace ShippingDocuments.Application
             logger.LogDebug("{Source} {@SaleDocs}", nameof(CreateAsync), saleDocs);
         }
 
-        public async Task UpdateAsync(SaleDoc item)
+        public async Task UpdateAsync(SaleDoc item, bool isUpdatePosition = true)
         {
             item.UserId = await authService.GetCurrentUserIdAsync();
+
+            if (isUpdatePosition){
+                UpdatePosition(item);
+                dbContext.SaleDocLogs.Add(new SaleDocLog(item));
+            }
 
             dbContext.Update(item);
 
             await dbContext.SaveChangesAsync();
+        }
+
+        private static void UpdatePosition(SaleDoc saleDoc)
+        {
+            if (saleDoc.IsCorrect)
+            {
+                switch (saleDoc.Position)
+                {
+                    case Position.Operators:
+                        saleDoc.Position = Position.Accounting;
+                        break;
+                    case Position.Managers:
+                        saleDoc.Position = Position.ForDispatch;
+                        saleDoc.Redispatch++;
+                        break;
+                    case Position.Accounting:
+                        saleDoc.Position = Position.Closed;
+                        break;
+                    case Position.Closed:
+                        saleDoc.Position = Position.ForDispatch;
+                        break;
+                }
+            }
+            else
+            {
+                saleDoc.Position = Position.Managers;
+            }
         }
 
         public async Task<List<SaleDoc>> GetList()
@@ -74,14 +106,42 @@ namespace ShippingDocuments.Application
                 .Include(e => e.PaperworkErrors)
                 .Include(e => e.QuantityErrors)
                 .FirstOrDefaultAsync(e => e.Id == id);
-
             if (item is null)
+                return null;
+
+            var ifRoleMatchesPosition = await IfRoleMatchesPosition(item);
+            if (!ifRoleMatchesPosition)
                 return null;
 
             item.User = await authService.FindByIdAsync(item.UserId);
 
+            await SetPositionIfNew(item);
+
             return item;
         }
+
+        private async Task SetPositionIfNew(SaleDoc saleDoc)
+        {
+            if (saleDoc.Position == Position.ForDispatch)
+            {
+                saleDoc.Position = Position.Operators;
+
+                await UpdateAsync(saleDoc, isUpdatePosition: false);
+            }
+        }
+
+        private async Task<bool> IfRoleMatchesPosition(SaleDoc saleDoc)
+        {
+            var user = await authService.GetCurrentUser();
+
+            if (user is null || saleDoc is null)
+                return false;
+
+            var result = await authService.IsUserInRole(user, saleDoc.Position.ToString());
+
+            return result;
+        }
+
 
         public async Task<List<SaleDoc>?> GetList(string invoiceRefKey)
         {

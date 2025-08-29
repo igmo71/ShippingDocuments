@@ -10,9 +10,8 @@
 @using static ShippingDocuments.Components.Pages.SaleDocPages.QuantityErrors
 
 @inject ISaleDocService SaleDocService
-@inject NavigationManager NavigationManager
 @inject IODataService ODataService
-@inject AuthService AuthService
+@inject NavigationManager NavigationManager
 
 @attribute [Authorize]
 
@@ -28,9 +27,9 @@ else
 {
     <SaleDocHeader SaleDoc="SaleDoc" />
 
-    <SaleDocMenu SaleDoc="SaleDoc" RemovePaperworkErrors="ClearPaperworkErrors" RemoveQuantityErrors="ClearQuantityErrors" />
-
     <EditForm method="post" Model="SaleDoc" OnSubmit="UpdateSaleDoc" FormName="updateSaleDoc" Enhance>
+
+        <SaleDocMenu SaleDoc="SaleDoc" RemovePaperworkErrors="ClearPaperworkErrors" />
 
         <PaperworkErrors SaleDoc="SaleDoc" OnCreateOrUpdateError="CreateOrUpdatePaperworkError" />
 
@@ -44,45 +43,21 @@ else
     public Guid Id { get; set; }
 
     [SupplyParameterFromForm]
-    private SaleDoc? SaleDoc { get; set; } = new();
+    private SaleDoc? SaleDoc { get; set; }
 
     private Document_РеализацияТоваровУслуг_Товары[]? products;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadSaleDoc();
-        await LoadProducts();
+        //await LoadProducts();
     }
 
     private async Task LoadSaleDoc()
     {
         SaleDoc = await SaleDocService.Get(Id);
 
-        await SetPosition();
-
-        await CheckPositionRole();
-    }
-
-    private async Task SetPosition()
-    {
-        if (SaleDoc == null || SaleDoc.Position != Position.ForDispatch)
-            return;
-
-        SaleDoc.Position = Position.Operators;
-
-        await SaleDocService.UpdateAsync(SaleDoc);
-    }
-
-    private async Task CheckPositionRole()
-    {
-        var user = await AuthService.GetCurrentUser();
-
-        if (user is null || SaleDoc is null)
-            return;
-
-        var isUserInPositionRole = await AuthService.IsUserInRole(user, SaleDoc.Position.ToString());
-
-        if (!isUserInPositionRole)
+        if (SaleDoc is null)
             NavigationManager.NavigateTo("saledocs");
     }
 
@@ -93,46 +68,9 @@ else
 
     private async Task UpdateSaleDoc(EditContext args)
     {
-        UpdatePosition();
-
         await SaleDocService.UpdateAsync((SaleDoc)args.Model);
 
         NavigationManager.NavigateTo("saledocs");
-    }
-
-    private void UpdatePosition()
-    {
-        if (SaleDoc == null)
-            return;
-
-        switch (SaleDoc.Position)
-        {
-            case Position.Operators:
-                if (SaleDoc.IsCorrect)
-                    SaleDoc.Position = Position.Accounting;
-                else
-                    SaleDoc.Position = Position.Managers;
-                break;
-            case Position.Managers:
-                if (SaleDoc.IsCorrect)
-                {
-                    SaleDoc.Position = Position.ForDispatch;
-                    SaleDoc.Redispatch++;
-                }
-                break;
-            case Position.Accounting:
-                if (SaleDoc.IsCorrect)
-                    SaleDoc.Position = Position.Closed;
-                else
-                    SaleDoc.Position = Position.Managers;
-                break;
-            case Position.Closed:
-                if (SaleDoc.IsCorrect)
-                    SaleDoc.Position = Position.ForDispatch;
-                else
-                    SaleDoc.Position = Position.Managers;
-                break;
-        }
     }
 
     private void CreateOrUpdatePaperworkError(ErrorCheckBoxParams errorCheckBoxParams)

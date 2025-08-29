@@ -1,4 +1,5 @@
 ﻿using ShippingDocuments.Common;
+using ShippingDocuments.Data;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
@@ -14,6 +15,8 @@ namespace ShippingDocuments.Domain
         {
             DateTime = DateTime.Now;
             SaleDocId = saleDoc.Id;
+            UserId = saleDoc.UserId;
+            IsCorrect = saleDoc.IsCorrect;
             Log = JsonSerializer.Serialize(saleDoc, AppSettings.JsonSerializerOptions);
         }
 
@@ -21,6 +24,11 @@ namespace ShippingDocuments.Domain
         public Guid Id { get; set; }
 
         public DateTime DateTime { get; set; }
+                
+        public string? UserId { get; set; }
+        public ApplicationUser? User { get; set; }
+
+        public bool IsCorrect { get; set; }
 
         public Guid SaleDocId { get; set; }
 
@@ -33,9 +41,14 @@ namespace ShippingDocuments.Domain
             {
                 if (Log is null)
                     return null;
-
-                return JsonSerializer.Deserialize<SaleDoc>(Log);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+                return JsonSerializer.Deserialize<SaleDoc>(Log, options);
             }
         }
+
+        public string Description => IsCorrect ? "Корректен" : "Требуется перепечатка";
     }
 }
