@@ -74,6 +74,15 @@ namespace ShippingDocuments.Domain
 
             return saleDoc;
         }
+
+        public string CorrectButtomLabel => Position switch
+        {
+            Position.Operators => "В Бухгалтерию к приемке",
+            Position.Managers => "К повторной отправке",
+            Position.Accounting => "Принять",
+            Position.Closed => "К повторной отправке",
+            _ => string.Empty
+        };
     }
 
     public enum Position

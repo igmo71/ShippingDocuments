@@ -29,6 +29,8 @@ else
 
     <EditForm method="post" Model="SaleDoc" OnSubmit="UpdateSaleDoc" FormName="updateSaleDoc" Enhance>
 
+        <input type="text" @ref="hiddenInput" class="visually-hidden" />
+
         <SaleDocMenu SaleDoc="SaleDoc" RemovePaperworkErrors="ClearPaperworkErrors" />
 
         <PaperworkErrors SaleDoc="SaleDoc" OnCreateOrUpdateError="CreateOrUpdatePaperworkError" />
@@ -39,6 +41,8 @@ else
 }
 
 @code {
+    private ElementReference hiddenInput;
+
     [SupplyParameterFromQuery]
     public Guid Id { get; set; }
 
@@ -51,6 +55,14 @@ else
     {
         await LoadSaleDoc();
         //await LoadProducts();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && SaleDoc is not null && SaleDoc.Position == Position.Accounting)
+        {
+            await hiddenInput.FocusAsync();
+        }
     }
 
     private async Task LoadSaleDoc()

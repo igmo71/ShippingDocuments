@@ -10,24 +10,8 @@
         @if (SaleDoc.IsCorrect)
         {
             <div class="col"><div class="alert alert-success h5 p-1"><i class="bi bi-check2-all me-2"></i><span> Корректен</span></div></div>
-            <div class="col">
-                @if (SaleDoc.Position == Position.Operators)
-                {
-                    <button type="submit" class="btn btn-success">В Бухгалтерию к приемке </button>
-                }
-                @if (SaleDoc.Position == Position.Managers)
-                {
-                    <button type="submit" class="btn btn-success">К повторной отправке</button>
-                }
-                @if (SaleDoc.Position == Position.Accounting)
-                {
-                    <button type="submit" class="btn btn-success">Принять</button>
-                }
-                @if (SaleDoc.Position == Position.Closed)
-                {
-                    <button type="submit" class="btn btn-success">К повторной отправке</button>
-                }
-            </div>
+
+            <div class="col"><button type="submit" class="btn btn-success">@SaleDoc.CorrectButtomLabel</button></div>
         }
         else
         {
