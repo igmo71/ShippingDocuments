@@ -113,20 +113,20 @@
         }
 
         SignInResult result;
-        if (!string.IsNullOrEmpty(Input.Passkey?.CredentialJson))
-        {
-            // When performing passkey sign-in, don't perform form validation.
-            var options = await SignInManager.RetrievePasskeyRequestOptionsAsync();
-            if (options is null)
-            {
-                errorMessage = "Error: Could not complete passkey login. Please try again.";
-                return;
-            }
+        // if (!string.IsNullOrEmpty(Input.Passkey?.CredentialJson))
+        // {
+        //     // When performing passkey sign-in, don't perform form validation.
+        //     var options = await SignInManager.RetrievePasskeyRequestOptionsAsync();
+        //     if (options is null)
+        //     {
+        //         errorMessage = "Error: Could not complete passkey login. Please try again.";
+        //         return;
+        //     }
 
-            result = await SignInManager.PasskeySignInAsync(Input.Passkey.CredentialJson, options);
-        }
-        else
-        {
+        //     result = await SignInManager.PasskeySignInAsync(Input.Passkey.CredentialJson, options);
+        // }
+        // else
+        // {
             // If doing a password sign-in, validate the form.
             if (!editContext.Validate())
             {
@@ -135,9 +135,10 @@
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+            
             //result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
             result = await AuthService.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-        }
+        //}
 
         if (result.Succeeded)
         {
